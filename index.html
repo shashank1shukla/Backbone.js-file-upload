@@ -10,8 +10,8 @@
 	
       $(function() {
         //initialize the files collection and add some files
-		App42.initialize("e06613e1e2142e282372d8015f616f0da3a3767b5ea665bcb76779aeb939a046","b0d0cd1512a97351b34bccf59e638f8555e7d801f330c1aa15fca7d9e6a55da6");
-        files = new Files();
+	App42.initialize("API_KEY","SECRET_KEY");
+	files = new Files();
        
 	   //only need to render the FilesView once
          view = new FilesView({ collection: files });
