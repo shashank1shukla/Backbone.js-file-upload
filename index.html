@@ -1,0 +1,144 @@
+﻿<html>
+  <head>
+    <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+    <script type='text/javascript' src='http://ajax.cdnjs.com/ajax/libs/underscore.js/1.1.4/underscore-min.js'></script>
+    <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.5.3/backbone-min.js'></script>
+    <script type='text/javascript' src='App42-all-1.6.min.js'></script>
+    <script type='text/javascript' src='main.js'></script>
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<script type='text/javascript'>
+	
+      $(function() {
+        //initialize the files collection and add some files
+		App42.initialize("e06613e1e2142e282372d8015f616f0da3a3767b5ea665bcb76779aeb939a046","b0d0cd1512a97351b34bccf59e638f8555e7d801f330c1aa15fca7d9e6a55da6");
+        files = new Files();
+       
+	   //only need to render the FilesView once
+         view = new FilesView({ collection: files });
+        var upload = new UploadView({el: $('#myButtons') });
+
+
+        //adding a score to the files list when the
+        //button is clicked
+        $("#view-score").click(function() {
+			view.unrender();
+			getAllFiles(view,files);
+		});
+      });
+
+      File = Backbone.Model.extend({
+        defaults: {
+		  name: "",
+          tinyUrl: ""
+        }
+      }); 
+	
+	Files = Backbone.Collection.extend({
+        model: File
+      }); 
+
+      FileRow = Backbone.View.extend({
+        initialize: function() {
+          _.bindAll(this, "render");
+          this.template = _.template($("#rank-row").html());
+		  this.model.bind('unrender', this.unrender,this);
+		  this.model.bind('remove', this.remove,this);
+        },
+		unrender: function(){
+		  $(this.el).remove();
+		},
+		remove: function(){
+		  this.model.destroy();
+		},
+        //every backbone view has a tagName. the default tagName is 'div'
+        //we're changing it to a table row
+        tagName: 'tr',
+
+        render: function() {
+            $(this.el).html(this.template(this.model.toJSON()));
+          return this;
+        }
+      });
+
+      UploadView = Backbone.View.extend({        
+        events: {
+		"click #saveImg": "saveimage",
+		},
+		saveimage: function() {
+		console.log("saveImg");
+			saveImg(view,files)
+		}
+      });	  
+
+      FilesView = Backbone.View.extend({        
+        initialize: function() {
+          _.bindAll(this, "render");
+          this.headerTemplate = $("#score-list-view").html();
+          this.collection.bind("add", this.renderFile, this);
+          this.collection.bind("change", this.renderFile, this);
+          this.collection.bind("unrender", this.unrender, this);
+          this.collection.bind("remove", this.remove, this);
+		  
+        },
+		events: {
+		"click #saveImg": "saveimage",
+		},
+		saveimage: function() {
+		console.log("saveImg");
+			saveImg(files)
+		},
+		unrender: function(){
+		 this.collection.reset();
+		  $(this.el).remove();
+		},
+		remove: function(){
+		  this.model.destroy();
+		},
+        //the FilesView element will be a table
+        tagName: 'table',
+
+        render: function() {
+          
+		  $(this.el).html(this.headerTemplate);
+			 this.collection.each(function(score) {
+            this.renderFile(score);
+		 }, this);
+
+          return this;
+        },
+
+        renderFile: function(score) {
+		
+		var scoreView = new FileRow({ model: score });
+          $(this.el).append(scoreView.render().el);
+        }
+      });
+
+	  
+	$('#spinner').hide();  // hide it initially
+    </script>
+
+    <script type='text/template' id='rank-row'>
+      <td><%= name %></td>
+      <td><img src= <%= tinyUrl %> alt="Smiley face" height="100" width="100"></td>
+    </script>
+
+	<script type='text/template' id='score-list-view'>
+      <thead>
+        <th>Name</th>
+        <th>Image</th>
+      </thead>
+    </script>
+  </head>
+  <body background="pagebg.png">
+    <button id="view-score" class="appbutton">View Files</button>
+	<div class="appbutton">Click here to Upload
+	<input type="file" name="img" id="img" style="opacity: 0; float: left; width: 163px; margin-top: -22px;
+" accept ="image/*">
+	</div>
+	<div id="myButtons">
+    <button id="saveImg" class="appbutton">Upload File</button>
+	</div>
+	<div id="spinner" style="display:none"><img src="spinner.gif" alt="Smiley face"></div>
+  </body>
+</html>

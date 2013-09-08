@@ -1,0 +1,38 @@
+table {
+white-space: normal;
+line-height: normal;
+font-weight: normal;
+font-size: medium;
+font-variant: normal;
+font-style: normal;
+color: -webkit-text;
+text-align: start;
+margin:0 auto;
+width:300px;
+color:#fff;
+font-style: italic;
+}
+table th{ width:100; text-align:left;}
+
+.appbutton{
+background: url(UploadButton.png) no-repeat;
+width: 179px;
+height: 31px;
+float: left;
+padding-top: 8px;
+margin-top: 10px;
+text-align: center;
+margin-right: 8px;
+border:none;
+}
+.file{
+position: relative; 
+width: 179px;
+height: 31px;
+float: left;
+padding-top: 8px;
+padding-left: 6px;
+margin-top: 10px;
+text-align: center;
+display: block;
+}
